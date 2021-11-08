@@ -53,11 +53,3 @@ export default async function mailer(config) {
         return e
     }
 }
-
-const response = await mailer({
-    to: 'yohanhxh@gmail.com',
-    subject: 'teste',
-    text: 'final texting'
-})
-
-console.log(response)
