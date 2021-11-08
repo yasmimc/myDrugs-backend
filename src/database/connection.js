@@ -18,6 +18,8 @@ const config =
 				},
 		  };
 
-const connection = new Pool();
+console.log(config)
+
+const connection = new Pool(config);
 
 export default connection;
