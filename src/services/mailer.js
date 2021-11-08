@@ -17,6 +17,10 @@ dotenv.config();
 export default async function mailer(config) {
     const { to, subject, text } = config
 
+    if(!to || to.trim() === '') throw 'config.to must be a valid string'
+    if(!subject || subject.trim() === '') throw 'config.subject must be a valid string'
+    if(!text || text.trim() === '') throw 'config.text must be a valid string'
+
     const oAuth2Client = new google.auth.OAuth2(
         process.env.CLIENT_ID,
         process.env.CLIENT_SECRET,
