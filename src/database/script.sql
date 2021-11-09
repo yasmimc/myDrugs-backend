@@ -1,4 +1,4 @@
-CREATE TABLE "public.users" (
+CREATE TABLE "users" (
 	"id" serial NOT NULL,
 	"name" TEXT NOT NULL,
 	"email" TEXT NOT NULL UNIQUE,
@@ -11,7 +11,7 @@ CREATE TABLE "public.users" (
 
 
 
-CREATE TABLE "public.sessions" (
+CREATE TABLE "sessions" (
 	"id" serial NOT NULL,
 	"user_id" serial NOT NULL,
 	"token" uuid NOT NULL UNIQUE,
@@ -25,7 +25,7 @@ CREATE TABLE "public.sessions" (
 
 
 
-CREATE TABLE "public.products_sold" (
+CREATE TABLE "products_sold" (
 	"int" serial NOT NULL,
 	"request_id" int NOT NULL,
 	"product_id" int NOT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE "public.products_sold" (
 
 
 
-CREATE TABLE "public.products" (
+CREATE TABLE "products" (
 	"id" serial NOT NULL,
 	"name" TEXT NOT NULL UNIQUE,
 	"category_id" int NOT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE "public.products" (
 
 
 
-CREATE TABLE "public.categories" (
+CREATE TABLE "categories" (
 	"id" serial NOT NULL,
 	"name" TEXT NOT NULL UNIQUE,
 	CONSTRAINT "categories_pk" PRIMARY KEY ("id")
@@ -59,7 +59,7 @@ CREATE TABLE "public.categories" (
 
 
 
-CREATE TABLE "public.requests" (
+CREATE TABLE "requests" (
 	"id" serial NOT NULL,
 	"user_id" int NOT NULL,
 	"code" uuid NOT NULL UNIQUE,

@@ -1,5 +1,7 @@
 import pg from "pg";
+import dotenv from 'dotenv';
 
+dotenv.config();
 const { Pool } = pg;
 
 const config =
@@ -18,6 +20,6 @@ const config =
 				},
 		  };
 
-const connection = new Pool();
+const connection = new Pool(config);
 
 export default connection;
