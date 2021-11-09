@@ -6,6 +6,7 @@ export default async function validateToken(req, res, next) {
     if(!authorization || authorization.trim() === "" || !authorization.includes("Bearer ")) return res.sendStatus(400)
 
     const token = authorization.replace("Bearer ", "")
+    
     if(token.trim() === "") return res.sendStatus(422)
     if(!uuidValidate(token)) return res.sendStatus(400)
 

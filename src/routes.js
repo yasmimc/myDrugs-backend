@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { logout } from './controllers/Sessions.js';
+import { logout } from './controllers/sessions.js';
 import validateToken from './middlewares/tokenValidator.js';
 
 const routes = Router();
