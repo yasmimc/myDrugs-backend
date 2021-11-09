@@ -42,14 +42,14 @@ async function signUp(req, res) {
 }
 
 async function signIn(req, res) {
-	const { email, password } = req.body;
+	const { email, cpf, password } = req.body;
 
-	if (!email || !password) {
+	if (!(email || cpf) || !password) {
 		res.send(400);
 		return;
 	}
 
-	const user = await userAlredyExists(email);
+	const user = await userAlredyExists(email, cpf);
 
 	if (!user) {
 		res.send(404);
