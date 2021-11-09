@@ -31,10 +31,46 @@ async function signUp(req, res) {
 		const encryptedPassword = bcrypt.hashSync(password, 10);
 
 		connection.query(
-			"INSERT INTO users (name, email, cpf, password)) VALUES ($1, $2, $3, $4)",
+			`INSERT INTO users (name, email, cpf, password)) VALUES ($1, $2, $3, $4)`,
 			[name, email, cpf, encryptedPassword]
 		);
 		res.sendStatus(201);
+	} catch (error) {
+		console.log(error.message);
+		res.send(500);
+	}
+}
+
+async function signIn(req, res) {
+	const { email, password } = req.body;
+
+	if (!email || !password) {
+		res.send(400);
+		return;
+	}
+
+	const user = await userAlredyExists(email);
+
+	if (!user) {
+		res.send(404);
+		return;
+	}
+
+	if (!bcrypt.compareSync(password, user.password)) {
+		res.sendStatus(401);
+		return;
+	}
+
+	try {
+		const device = req.headers?.["user-agent"];
+		const token = uuid();
+
+		connection.query(
+			`INSERT INTO sessions ("user_id", token, device) VALUES ($1, $2, $3)`,
+			[user.id, token, device]
+		);
+
+		res.status(200).send(token);
 	} catch (error) {
 		console.log(error.message);
 		res.send(500);
@@ -46,8 +82,8 @@ async function userAlredyExists(email, cpf) {
 		`SELECT * FROM users WHERE email = $1 OR cpf = $2;`,
 		[email, cpf]
 	);
-	if (existentUser.rowCount !== 0) return existentUser.rows;
+	if (existentUser.rowCount !== 0) return existentUser.rows[0];
 	return false;
 }
 
-export { signUp };
+export { signUp, signIn };
