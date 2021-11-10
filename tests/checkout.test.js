@@ -41,6 +41,16 @@ describe("feat/ checkout POST /checkout", () => {
         expect(result.status).toEqual(201)
     })
 
-    afterAll(() => { connection.end() })
+    afterAll(async () => {
+        const connections = [
+            connection.query('DELETE FROM requests;'),
+            connection.query('DELETE FROM sessions;'),
+            connection.query('DELETE FROM users;'),
+            connection.query('DELETE FROM products;'),
+            connection.query('DELETE FROM categories;'),
+        ]
+        await Promise.all(connections)
+        connection.end()
+    })
 
 })
