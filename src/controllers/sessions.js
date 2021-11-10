@@ -5,7 +5,7 @@ async function logout(req, res) {
         const token = req.headers.authorization.replace("Bearer ", "")
 
         const dbResponse = await connection.query(
-            'UPDATE sessions SET is_expired = TRUE WHERE token = $1 AND is_expired = FALSE', 
+            'UPDATE sessions SET is_expired = TRUE WHERE token = $1 AND is_expired = FALSE;', 
             [ token ]
         )
         if(!dbResponse.rowCount) return res.sendStatus(404)

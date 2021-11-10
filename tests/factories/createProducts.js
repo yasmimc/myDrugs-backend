@@ -1,4 +1,4 @@
-import connection from '../../src/database/connection.js';
+import connection from '../../src/database/connection';
 import faker from 'faker';
 
 export default async function createProducts(categoryIds) {

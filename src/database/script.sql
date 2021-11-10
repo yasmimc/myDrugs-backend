@@ -25,6 +25,7 @@ CREATE TABLE "products_sold" (
 	"int" serial NOT NULL,
 	"request_id" int NOT NULL,
 	"product_id" int NOT NULL,
+	"amount" int NOT NULL,
 	CONSTRAINT "products_sold_pk" PRIMARY KEY ("int")
 ) WITH (
   OIDS=FALSE
@@ -35,7 +36,6 @@ CREATE TABLE "products" (
 	"name" TEXT NOT NULL UNIQUE,
 	"category_id" int NOT NULL,
 	"stock_total" int NOT NULL,
-	"amount" int NOT NULL,
 	CONSTRAINT "products_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -54,6 +54,8 @@ CREATE TABLE "requests" (
 	"user_id" int NOT NULL,
 	"code" uuid NOT NULL UNIQUE,
 	"date" TIMESTAMP NOT NULL DEFAULT 'now()',
+	"cep" varchar(8) NOT NULL,
+	"address_number" int NOT NULL,
 	CONSTRAINT "requests_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
