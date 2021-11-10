@@ -30,12 +30,14 @@ export async function checkout(req, res) {
         })
 
         await Promise.all(soldProductsPromises)
+
         mailer({
             to: email,
             subject: "Compra Confirmada!",
             text: `Olá, ${name.split(" ")[0]}, sua compra foi confirmada e pode ser acompanhada no painel do usuário em nosso site.
             muito obrigado, esperamos te ver mais vezes.`
         })
+
         return res.sendStatus(201);
     } catch(e) {
         console.log("ERROR POST /checkout")
