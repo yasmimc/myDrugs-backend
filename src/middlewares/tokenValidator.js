@@ -11,7 +11,7 @@ export default async function validateToken(req, res, next) {
     if(!uuidValidate(token)) return res.sendStatus(400)
 
     try {
-        const dbResponse = await connection.query('SELECT * FROM sessions WHERE token = $1', [ token ])
+        const dbResponse = await connection.query('SELECT * FROM sessions WHERE token = $1;', [ token ])
         if(!dbResponse.rows.length) return res.sendStatus(404)
     } catch(e) {
         console.log("FAIL in validateToken")
