@@ -9,11 +9,9 @@
 ```json
  [ 
     {
-        "id":1,
         "name":"coffee",
         "category":"drink",
-        "stock_total":10,
-        "amount":5
+        "stock_total":10
     }
  ]
 ```
