@@ -19,7 +19,6 @@ const config =
 					rejectUnauthorized: false,
 				},
 		  };
-console.log(config);
 const connection = new Pool(config);
 
 export default connection;

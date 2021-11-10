@@ -2,8 +2,12 @@ import connection from '../database/connection.js';
 
 async function getProducts(req, res) {
     try {
-        const dbResponse = await connection.query('SELECT * FROM products');
-        return res.send(dbResponse);
+        const products = await connection.query(`
+        SELECT products.name,categories.name AS category, stock_total FROM products
+        JOIN categories ON products.category_id = categories.id;
+        `);
+        if (!products.rowCount) return res.sendStatus(204);
+        return res.send(products.rows);
     } catch(e) {
         console.log("ERROR GET /products")
         console.log(e)
