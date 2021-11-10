@@ -31,6 +31,7 @@ export async function checkout(req, res) {
 
         await Promise.all(soldProductsPromises)
 
+        // mailer without await throws a warning in jest: "A worker process has failed to exit gracefully and has been force exited."
         mailer({
             to: email,
             subject: "Compra Confirmada!",
