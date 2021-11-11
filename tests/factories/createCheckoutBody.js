@@ -8,7 +8,7 @@ export default function createCheckoutBody(user, products) {
         addressNumber: parseInt(Math.random()*1000),
         products: products.map(product => ({
             productId: product.id,
-            ammount: 1,
+            amount: 1,
         }))
     }
 }
