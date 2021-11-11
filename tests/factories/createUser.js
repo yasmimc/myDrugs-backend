@@ -7,7 +7,7 @@ export async function createUser() {
     while(cpf.length < 11) { cpf += parseInt(Math.random()*10, 10) }
 
     const user = {
-        name: faker.name.findName(),
+        name: faker.name.firstName(),
         email: faker.internet.email(),
         password: faker.internet.password(),
         cpf,
