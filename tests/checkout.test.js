@@ -51,9 +51,9 @@ describe("feat/ checkout POST /checkout", () => {
 
 afterAll(async () => {
 	await connection.query("DELETE FROM products_sold");
-	await connection.query("DELETE FROM requests");
-	await connection.query("DELETE FROM categories");
 	await connection.query("DELETE FROM products");
+	await connection.query("DELETE FROM categories");
+	await connection.query("DELETE FROM requests");
 	await connection.query("DELETE FROM sessions");
 	await connection.query("DELETE FROM users");
 

@@ -7,22 +7,32 @@ import createProducts from "./factories/createProducts.js";
 
 describe("GET /products", () => {
     beforeAll(async () => {
-       const categories = await createCategories(2);
-       await createProducts(categories.map((id)=> id.id));
+        const categories = await createCategories(2);
+        await createProducts(categories.map((id)=> id.id));
     })
-    afterEach(async () => {
-       await connection.query("DELETE FROM products");
-       await connection.query("DELETE FROM categories");
-    })
-    afterAll(() => { connection.end() })
-
+    
     it("response 200 for success", async () => {
         const result = await supertest(app).get("/products")
         expect(result.status).toEqual(200);
-        expect(result.body).toHaveLength(2)
     })
     it("response 204 for success but no content", async () => {
+        await connection.query('DELETE FROM products_sold;')
+        await connection.query('DELETE FROM products;')
+        await connection.query('DELETE FROM categories;')
+        await connection.query('DELETE FROM requests;')
+
         const result = await supertest(app).get("/products")
         expect(result.status).toEqual(204);
     })
+});
+
+afterAll(async () => {
+    await connection.query("DELETE FROM products_sold");
+    await connection.query("DELETE FROM requests");
+    await connection.query("DELETE FROM categories");
+    await connection.query("DELETE FROM products");
+    await connection.query("DELETE FROM sessions");
+    await connection.query("DELETE FROM users");
+
+    connection.end();
 });

@@ -4,6 +4,9 @@ import supertest from "supertest";
 import connection from "../src/database/connection.js";
 import { createUser } from "./factories/createUser.js";
 
+
+import faker from "faker";
+
 describe("POST /sign-up", () => {
 	let mockUser;
 
@@ -34,7 +37,8 @@ describe("POST /sign-up", () => {
 	});
 
 	it("returns 409 for existent user", async () => {
-		const result = await supertest(app).post("/sign-up").send(mockUser);
+		const newUser = await createUser();
+		const result = await supertest(app).post("/sign-up").send(newUser);
 		const status = result.status;
 
 		expect(status).toEqual(409);
@@ -60,7 +64,7 @@ describe("POST /sign-in", () => {
 		const result = await supertest(app)
 			.post("/sign-in")
 			.send(body)
-			.set({ "user-agent": "jest" });
+			.set({ "user-agent": faker.internet.userAgent() });
 		const status = result.status;
 
 		expect(status).toEqual(200);
@@ -75,7 +79,7 @@ describe("POST /sign-in", () => {
 		const result = await supertest(app)
 			.post("/sign-in")
 			.send(body)
-			.set({ "user-agent": "jest" });
+			.set({ "user-agent": faker.internet.userAgent() });
 		const status = result.status;
 		const resp = result.body;
 
@@ -92,15 +96,15 @@ describe("POST /sign-in", () => {
 		const result = await supertest(app)
 			.post("/sign-in")
 			.send(body)
-			.set({ "user-agent": "jest" });
+			.set({ "user-agent": faker.internet.userAgent() });
 		const status = result.status;
 
 		expect(status).toEqual(400);
 	});
 
 	it("returns 404 for non existent user", async () => {
-		/*createUser takes an optional parameter (dontSave) that says 
-		whether user data should not be saved to the database*/
+		//createUser takes an optional parameter (dontSave) that says 
+		//whether user data should not be saved to the database
 		const nonExistentUser = await createUser(true);
 
 		const body = {
@@ -111,7 +115,7 @@ describe("POST /sign-in", () => {
 		const result = await supertest(app)
 			.post("/sign-in")
 			.send(body)
-			.set({ "user-agent": "jest" });
+			.set({ "user-agent": faker.internet.userAgent() });
 		const status = result.status;
 
 		expect(status).toEqual(404);
@@ -126,7 +130,7 @@ describe("POST /sign-in", () => {
 		const result = await supertest(app)
 			.post("/sign-in")
 			.send(body)
-			.set({ "user-agent": "jest" });
+			.set({ "user-agent": faker.internet.userAgent() });
 		const status = result.status;
 
 		expect(status).toEqual(401);

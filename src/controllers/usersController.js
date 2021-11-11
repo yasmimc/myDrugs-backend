@@ -78,12 +78,18 @@ async function signIn(req, res) {
 }
 
 async function userAlredyExists(email, cpf) {
-	const existentUser = await connection.query(
-		`SELECT * FROM users WHERE email = $1 OR cpf = $2;`,
-		[email, cpf]
-	);
-	if (existentUser.rowCount !== 0) return existentUser.rows[0];
-	return false;
+	try {
+		const existentUser = await connection.query(
+			`SELECT * FROM users WHERE email = $1 OR cpf = $2;`,
+			[email, cpf]
+		);
+		if (existentUser.rowCount !== 0) return existentUser.rows[0];
+		return false;
+	} catch(e) {
+		console.log("ERROR func userAlredyExists")
+		console.log(e)
+		return false;
+	}
 }
 
 export { signUp, signIn };
