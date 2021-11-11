@@ -14,8 +14,7 @@ describe("GET /products", () => {
        await connection.query("DELETE FROM products");
        await connection.query("DELETE FROM categories");
     })
-    afterAll(() => { connection.end() })
-
+    
     it("response 200 for success", async () => {
         const result = await supertest(app).get("/products")
         expect(result.status).toEqual(200);
@@ -25,4 +24,15 @@ describe("GET /products", () => {
         const result = await supertest(app).get("/products")
         expect(result.status).toEqual(204);
     })
+});
+
+afterAll(async () => {
+    await connection.query("DELETE FROM products_sold");
+    await connection.query("DELETE FROM requests");
+    await connection.query("DELETE FROM categories");
+    await connection.query("DELETE FROM products");
+    await connection.query("DELETE FROM sessions");
+    await connection.query("DELETE FROM users");
+
+    connection.end();
 });
