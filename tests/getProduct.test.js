@@ -8,7 +8,7 @@ import createProducts from "./factories/createProducts.js";
 describe("GET /products", () => {
     beforeAll(async () => {
        const categories = await createCategories(2);
-       await createProducts(categories.map((id) => id.id));
+       await createProducts(categories.map((id)=> id.id));
     })
     afterEach(async () => {
        await connection.query("DELETE FROM products");
