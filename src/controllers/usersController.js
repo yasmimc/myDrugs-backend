@@ -14,7 +14,10 @@ async function signUp(req, res) {
 	});
 
 	if (validation.error) {
-
+		console.log(
+			`${validation.error.details.length} SCHEMA VALIDATION ERRORS FOUND:`
+		);
+		validation.error.details.forEach((error) => console.log(error.message));
 		res.sendStatus(400);
 		return;
 	}
