@@ -24,15 +24,15 @@ export async function checkout(req, res) {
 
         const soldProductsPromises = products.map(product => {
             connection.query(
-                'INSERT INTO products_sold (request_id, product_id, ammount) VALUES ($1, $2, $3);',
-                [ productRequest.rows[0].id, product.productId, product.ammount ]
+                'INSERT INTO products_sold (request_id, product_id, amount) VALUES ($1, $2, $3);',
+                [ productRequest.rows[0].id, product.productId, product.amount ]
             )
         })
 
         await Promise.all(soldProductsPromises)
 
         // mailer without await throws a warning in jest: "A worker process has failed to exit gracefully and has been force exited."
-        mailer({
+        await mailer({
             to: email,
             subject: "Compra Confirmada!",
             text: `Olá, ${name.split(" ")[0]}, sua compra foi confirmada e pode ser acompanhada no painel do usuário em nosso site.

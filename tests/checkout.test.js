@@ -17,7 +17,7 @@ describe("feat/ checkout POST /checkout", () => {
     beforeAll(async () => {
         USER = await createUser();
         SESSION = await createSession(USER.id);
-        const categories = await createCategories();
+        const categories = await createCategories(2);
         PRODUCTS = await createProducts(categories.map(category => category.id))
     })
 
@@ -40,6 +40,8 @@ describe("feat/ checkout POST /checkout", () => {
         expect(result.status).toEqual(201)
     })
 
-    afterAll(() => { connection.end() })
+    afterAll(async () => {
+        connection.end()
+    })
 
 })

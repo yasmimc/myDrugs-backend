@@ -45,6 +45,7 @@ describe("feat/logout DELETE /sessions", () => {
     })
 
     it("response 404 after trying logout already logged out session", async () => {
+        await supertest(app).delete("/sessions").set({ Authorization: `Bearer ${session.token}` })
         const result = await supertest(app).delete("/sessions").set({ Authorization: `Bearer ${session.token}` })
         expect(result.status).toEqual(404)
     })

@@ -6,7 +6,7 @@ export default async function createCategories(howMany) {
         const promises = []
 
         for(let i = 0; i < howMany; i++) {
-            const name = faker.commerce.department();
+            const name = faker.name.findName()
             const categories = connection.query(
                 'INSERT INTO categories (name) VALUES ($1) RETURNING *;',
                 [ name ]
@@ -19,3 +19,6 @@ export default async function createCategories(howMany) {
         return e
     }
 }
+/* 
+const result = await createCategories(2);
+console.log(result) */

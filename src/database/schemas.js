@@ -2,7 +2,7 @@ import Joi from "joi";
 
 const productSoldSchema = Joi.object({
     productId: Joi.number().required(),
-    ammount: Joi.number().required()
+    amount: Joi.number().required()
 })
 
 export const checkoutSchema = Joi.object({
