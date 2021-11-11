@@ -1,4 +1,3 @@
-import "../src/setup.js";
 import app from '../src/app.js';
 import supertest from 'supertest';
 import connection from '../src/database/connection.js';
@@ -18,10 +17,7 @@ describe("feat/ checkout POST /checkout", () => {
     beforeAll(async () => {
         USER = await createUser();
         SESSION = await createSession(USER.id);
-    })
-
-    beforeEach(async () => {
-        const categories = await createCategories(2);
+        const categories = await createCategories();
         PRODUCTS = await createProducts(categories.map(category => category.id))
     })
 
@@ -34,7 +30,6 @@ describe("feat/ checkout POST /checkout", () => {
 
     it("response 422 after sending invalid body", async () => {
         const body = {}
-        console.log(`vai enviar o token correto: ${ SESSION.token}`)
         const result = await supertest(app).post("/checkout").send(body).set({ Authorization: `Bearer ${SESSION.token}` })
         expect(result.status).toEqual(422)
     })
@@ -43,10 +38,6 @@ describe("feat/ checkout POST /checkout", () => {
         const body = createCheckoutBody(USER, PRODUCTS)
         const result = await supertest(app).post("/checkout").send(body).set({ Authorization: `Bearer ${SESSION.token}` })
         expect(result.status).toEqual(201)
-    })
-
-    afterEach(async () => {
-        await connection.query('DELETE FROM requests; DELETE FROM sessions; DELETE FROM users; DELETE FROM products; DELETE FROM categories; DELETE FROM products_sold')
     })
 
     afterAll(() => { connection.end() })

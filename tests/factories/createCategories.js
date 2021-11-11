@@ -7,7 +7,6 @@ export default async function createCategories(howMany) {
 
         for(let i = 0; i < howMany; i++) {
             const name = faker.commerce.department();
-            /* console.log(name) */
             const categories = connection.query(
                 'INSERT INTO categories (name) VALUES ($1) RETURNING *;',
                 [ name ]
@@ -20,6 +19,3 @@ export default async function createCategories(howMany) {
         return e
     }
 }
-
-/* const howMany = await createCategories(2)
-console.log(howMany) */

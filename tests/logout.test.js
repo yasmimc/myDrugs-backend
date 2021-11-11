@@ -15,6 +15,8 @@ describe("feat/logout DELETE /sessions", () => {
         session = await createSession(user.id);
     })
 
+    afterAll(() => { connection.end() })
+
     it("response 400 after sending none or unformated token", async () => {
         let result = await supertest(app).delete("/sessions")
         expect(result.status).toEqual(400)
@@ -47,9 +49,4 @@ describe("feat/logout DELETE /sessions", () => {
         expect(result.status).toEqual(404)
     })
 
-    afterEach(async () => {
-        await connection.query('DELETE FROM requests; DELETE FROM sessions; DELETE FROM users; DELETE FROM products; DELETE FROM categories; DELETE FROM products_sold')
-    })
-
-    afterAll(() => { connection.end() })
 })
