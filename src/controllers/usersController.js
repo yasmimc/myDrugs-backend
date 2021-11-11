@@ -70,7 +70,7 @@ async function signIn(req, res) {
 			[user.id, token, device]
 		);
 
-		res.status(200).send(token);
+		res.status(200).send({ token });
 	} catch (error) {
 		console.log(error.message);
 		res.send(500);

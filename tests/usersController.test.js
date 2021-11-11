@@ -77,8 +77,10 @@ describe("POST /sign-in", () => {
 			.send(body)
 			.set({ "user-agent": "jest" });
 		const status = result.status;
+		const resp = result.body;
 
 		expect(status).toEqual(200);
+		expect(resp).toHaveProperty("token");
 	});
 
 	it("returns 400 for invalid user params", async () => {
