@@ -13,7 +13,16 @@
         "name":"coffee",
         "category":"drink",
         "stock_total":10,
-        "amount":5
+        "image":"URL",
+        "price":2.99
+    }
+    {
+        "id":2,
+        "name":"mentos",
+        "category":"gum",
+        "stock_total":8,
+        "image":"URL",
+        "price":1.99
     }
  ]
 ```

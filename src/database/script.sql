@@ -38,7 +38,7 @@ CREATE TABLE "products" (
 	"description" TEXT NOT NULL,
 	"image" TEXT NOT NULL,
 	"stock_total" int NOT NULL,
-	"price" int NOT NULL,
+	"price" DECIMAL NOT NULL,
 	CONSTRAINT "products_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
