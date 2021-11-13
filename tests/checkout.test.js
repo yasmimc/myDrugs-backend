@@ -19,7 +19,6 @@ describe("feat/ checkout POST /checkout", () => {
 		SESSION = await createSession(USER.id);
 		PAYMENT_WAY = await createPaymentWay()
 		CART = await createCart(USER.id)
-		console.log(CART)
 	});
 
 	it("response 404 sending invalid token", async () => {
