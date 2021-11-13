@@ -21,21 +21,24 @@ CREATE TABLE "sessions" (
   OIDS=FALSE
 );
 
-CREATE TABLE "products_sold" (
+CREATE TABLE "cart_products" (
 	"int" serial NOT NULL,
-	"request_id" int NOT NULL,
+	"cart_id" int NOT NULL,
 	"product_id" int NOT NULL,
-	CONSTRAINT "products_sold_pk" PRIMARY KEY ("int")
+	"amount" int NOT NULL,
+	CONSTRAINT "cart_products_pk" PRIMARY KEY ("int")
 ) WITH (
   OIDS=FALSE
 );
 
 CREATE TABLE "products" (
 	"id" serial NOT NULL,
-	"name" TEXT NOT NULL UNIQUE,
 	"category_id" int NOT NULL,
+	"name" TEXT NOT NULL UNIQUE,
+	"description" TEXT NOT NULL,
+	"image" TEXT NOT NULL,
 	"stock_total" int NOT NULL,
-	"amount" int NOT NULL,
+	"price" int NOT NULL,
 	CONSTRAINT "products_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -49,18 +52,41 @@ CREATE TABLE "categories" (
   OIDS=FALSE
 );
 
-CREATE TABLE "requests" (
+CREATE TABLE "carts" (
 	"id" serial NOT NULL,
 	"user_id" int NOT NULL,
-	"code" uuid NOT NULL UNIQUE,
-	"date" TIMESTAMP NOT NULL DEFAULT 'now()',
-	CONSTRAINT "requests_pk" PRIMARY KEY ("id")
+	CONSTRAINT "carts_pk" PRIMARY KEY ("id")
+) WITH (
+  OIDS=FALSE
+);
+
+CREATE TABLE "payment_ways" (
+	"id" serial NOT NULL,
+	"name" varchar(255) NOT NULL,
+	CONSTRAINT "payment_ways_pk" PRIMARY KEY ("id")
+) WITH (
+  OIDS=FALSE
+);
+
+CREATE TABLE "checkouts" (
+	"id" serial NOT NULL,
+	"cart_id" int NOT NULL,
+	"payment_id" int NOT NULL,
+	"code" uuid NOT NULL,
+	"cep" varchar(8) NOT NULL,
+	"address_number" int NOT NULL,
+	"checkout_date" TIMESTAMP NOT NULL DEFAULT 'now()',
+	"user_id" integer NOT NULL,
+	CONSTRAINT "checkouts_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
 );
 
 ALTER TABLE "sessions" ADD CONSTRAINT "sessions_fk0" FOREIGN KEY ("user_id") REFERENCES "users"("id");
-ALTER TABLE "products_sold" ADD CONSTRAINT "products_sold_fk0" FOREIGN KEY ("request_id") REFERENCES "requests"("id");
-ALTER TABLE "products_sold" ADD CONSTRAINT "products_sold_fk1" FOREIGN KEY ("product_id") REFERENCES "products"("id");
+ALTER TABLE "cart_products" ADD CONSTRAINT "cart_products_fk0" FOREIGN KEY ("cart_id") REFERENCES "carts"("id");
+ALTER TABLE "cart_products" ADD CONSTRAINT "cart_products_fk1" FOREIGN KEY ("product_id") REFERENCES "products"("id");
 ALTER TABLE "products" ADD CONSTRAINT "products_fk0" FOREIGN KEY ("category_id") REFERENCES "categories"("id");
-ALTER TABLE "requests" ADD CONSTRAINT "requests_fk0" FOREIGN KEY ("user_id") REFERENCES "users"("id");
+ALTER TABLE "carts" ADD CONSTRAINT "carts_fk0" FOREIGN KEY ("user_id") REFERENCES "users"("id");
+ALTER TABLE "checkouts" ADD CONSTRAINT "checkouts_fk0" FOREIGN KEY ("cart_id") REFERENCES "carts"("id");
+ALTER TABLE "checkouts" ADD CONSTRAINT "checkouts_fk1" FOREIGN KEY ("payment_id") REFERENCES "payment_ways"("id");
+ALTER TABLE "checkouts" ADD CONSTRAINT "checkouts_fk2" FOREIGN KEY ("user_id") REFERENCES "users"("id");
