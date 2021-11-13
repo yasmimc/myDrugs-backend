@@ -16,22 +16,19 @@ describe("GET /products", () => {
         expect(result.status).toEqual(200);
     })
     it("response 204 for success but no content", async () => {
-        await connection.query('DELETE FROM products_sold;')
-        await connection.query('DELETE FROM products;')
-        await connection.query('DELETE FROM categories;')
-        await connection.query('DELETE FROM requests;')
-
         const result = await supertest(app).get("/products")
         expect(result.status).toEqual(204);
     })
 });
 
 afterAll(async () => {
-    await connection.query("DELETE FROM products_sold");
-    await connection.query("DELETE FROM requests");
-    await connection.query("DELETE FROM categories");
-    await connection.query("DELETE FROM products");
+    await connection.query("DELETE FROM payment_ways");
     await connection.query("DELETE FROM sessions");
+    await connection.query("DELETE FROM checkouts");
+    await connection.query("DELETE FROM cart_products");
+    await connection.query("DELETE FROM products");
+    await connection.query("DELETE FROM categories");
+    await connection.query("DELETE FROM carts");
     await connection.query("DELETE FROM users");
 
     connection.end();

@@ -1,14 +1,12 @@
 
-export default function createCheckoutBody(user, products) {
+export default function createCheckoutBody(user, paymentId, cartId) {
     return {
         userId: user.id,
+        paymentId: paymentId,
+        cartId: cartId,
         name: user.name,
         email: user.email,
         cep: "58900000",
-        addressNumber: parseInt(Math.random()*1000),
-        products: products.map(product => ({
-            productId: product.id,
-            amount: 1,
-        }))
+        addressNumber: parseInt(Math.random()*1000)
     }
 }
