@@ -7,29 +7,20 @@ export async function checkout(req, res) {
     if(checkoutSchema.validate(req.body).error) return res.sendStatus(422)
     const {
         userId,
+        paymentId,
+        cartId,
         name,
         email,
         cep,
         addressNumber,
-        products
     } = req.body;
 
     try {
         const code = uuid();
-        
-        const productRequest = await connection.query(
-            'INSERT INTO requests (user_id, code, cep, address_number) VALUES ($1, $2, $3, $4) RETURNING *;',
-            [ userId, code, cep, addressNumber ]
+        const productCheckout = await connection.query(
+            'INSERT INTO checkouts (cart_id, payment_id, code, cep, address_number, user_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;',
+            [ cartId, paymentId, code, cep, addressNumber, userId ]
         )
-
-        const soldProductsPromises = products.map(product => {
-            connection.query(
-                'INSERT INTO products_sold (request_id, product_id, amount) VALUES ($1, $2, $3);',
-                [ productRequest.rows[0].id, product.productId, product.amount ]
-            )
-        })
-
-        await Promise.all(soldProductsPromises)
 
         // mailer without await throws a warning in jest: "A worker process has failed to exit gracefully and has been force exited."
         mailer({
@@ -39,7 +30,7 @@ export async function checkout(req, res) {
             muito obrigado, esperamos te ver mais vezes.`
         })
 
-        return res.sendStatus(201);
+        return res.status(201).send(productCheckout.rows[0]);
     } catch(e) {
         console.log("ERROR POST /checkout")
         console.log(e)

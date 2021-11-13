@@ -138,7 +138,13 @@ describe("POST /sign-in", () => {
 });
 
 afterAll(async () => {
+	await connection.query("DELETE FROM payment_ways");
 	await connection.query("DELETE FROM sessions");
+	await connection.query("DELETE FROM checkouts");
+	await connection.query("DELETE FROM cart_products");
+	await connection.query("DELETE FROM products");
+	await connection.query("DELETE FROM categories");
+	await connection.query("DELETE FROM carts");
 	await connection.query("DELETE FROM users");
 });
 
