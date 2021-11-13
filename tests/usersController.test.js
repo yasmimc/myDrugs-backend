@@ -4,7 +4,6 @@ import supertest from "supertest";
 import connection from "../src/database/connection.js";
 import { createUser } from "./factories/createUser.js";
 
-
 import faker from "faker";
 
 describe("POST /sign-up", () => {
@@ -66,8 +65,11 @@ describe("POST /sign-in", () => {
 			.send(body)
 			.set({ "user-agent": faker.internet.userAgent() });
 		const status = result.status;
+		const resp = result.body;
 
 		expect(status).toEqual(200);
+		expect(resp).toHaveProperty("token");
+		expect(resp).toHaveProperty("user");
 	});
 
 	it("returns 200 for successful sign in using cpf", async () => {
@@ -85,6 +87,7 @@ describe("POST /sign-in", () => {
 
 		expect(status).toEqual(200);
 		expect(resp).toHaveProperty("token");
+		expect(resp).toHaveProperty("user");
 	});
 
 	it("returns 400 for invalid user params", async () => {
@@ -103,7 +106,7 @@ describe("POST /sign-in", () => {
 	});
 
 	it("returns 404 for non existent user", async () => {
-		//createUser takes an optional parameter (dontSave) that says 
+		//createUser takes an optional parameter (dontSave) that says
 		//whether user data should not be saved to the database
 		const nonExistentUser = await createUser(true);
 
