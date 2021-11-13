@@ -17,6 +17,6 @@ routes.get("/health", (req, res) => {
 	res.send("Healthy");
 });
 routes.get("/products", getProducts);
-routes.get("/cart", getCart)
+routes.get("/cart", validateToken, getCart)
 
 export default routes;

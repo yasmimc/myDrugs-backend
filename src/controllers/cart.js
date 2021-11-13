@@ -8,16 +8,18 @@ async function getCart(req, res) {
     const token = req.headers.authorization.replace("Bearer ", "")
 
     try {
-        const dbUserIdSearch = await connection.query('SELECT user_id FROM sessions WHERE token = $1 AND is_expired = FALSE;', [ token ])
+        const dbUserIdSearch = await connection.query('SELECT * FROM sessions WHERE token = $1 AND is_expired = FALSE;', [ token ])
         if(!dbUserIdSearch.rows.length) return res.sendStatus(404)
 
         const dbCartSearch = await connection.query(
-            'SELECT * FROM carts WHERE user_id = $1 AND id NOT IN (SELECT cart_id FROM checkouts;);',
+            'SELECT * FROM carts WHERE user_id = $1 AND id NOT IN (SELECT cart_id FROM checkouts);',
             [ dbUserIdSearch.rows[0].id ]
         )
 
         if(dbCartSearch.rows.length) return res.status(200).send(dbCartSearch.rows[0])
 
+        console.log(dbUserIdSearch.rows[0].id)
+        console.log(typeof dbUserIdSearch.rows[0].id)
         const newCart = await connection.query(
             'INSERT INTO carts (user_id) VALUES ($1) RETURNING *;',
             [ dbUserIdSearch.rows[0].id ]
