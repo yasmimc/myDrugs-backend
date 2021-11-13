@@ -44,6 +44,8 @@ CREATE TABLE "products" (
   OIDS=FALSE
 );
 
+
+
 CREATE TABLE "categories" (
 	"id" serial NOT NULL,
 	"name" TEXT NOT NULL UNIQUE,

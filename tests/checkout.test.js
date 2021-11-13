@@ -4,24 +4,25 @@ import connection from "../src/database/connection.js";
 import { v4 as uuid } from "uuid";
 import { createUser } from "./factories/createUser.js";
 import { createSession } from "./factories/createSession.js";
-import createCategories from "./factories/createCategories.js";
-import createProducts from "./factories/createProducts.js";
+import createPaymentWay from "./factories/createPaymentWay.js";
 import createCheckoutBody from "./factories/createCheckoutBody.js";
+import createCart from "./factories/createCart.js";
 
 describe("feat/ checkout POST /checkout", () => {
 	let USER;
-	let PRODUCTS;
 	let SESSION;
+	let PAYMENT_WAY;
+	let CART;
 
 	beforeAll(async () => {
 		USER = await createUser();
 		SESSION = await createSession(USER.id);
-		const categories = await createCategories();
-		PRODUCTS = await createProducts(categories.map((category) => category.id));
+		PAYMENT_WAY = await createPaymentWay()
+		CART = await createCart(USER.id)
 	});
 
 	it("response 404 sending invalid token", async () => {
-		const body = createCheckoutBody(USER, PRODUCTS);
+		const body = createCheckoutBody(USER, PAYMENT_WAY.id, CART.id);
 		const invalidToken = uuid();
 		const result = await supertest(app)
 			.post("/checkout")
@@ -40,7 +41,7 @@ describe("feat/ checkout POST /checkout", () => {
 	});
 
 	it("response 201 after seding proper data", async () => {
-		const body = createCheckoutBody(USER, PRODUCTS);
+		const body = createCheckoutBody(USER, PAYMENT_WAY.id, CART.id);
 		const result = await supertest(app)
 			.post("/checkout")
 			.send(body)
@@ -50,11 +51,13 @@ describe("feat/ checkout POST /checkout", () => {
 });
 
 afterAll(async () => {
-	await connection.query("DELETE FROM products_sold");
+	await connection.query("DELETE FROM sessions");
+	await connection.query("DELETE FROM checkouts");
+	await connection.query("DELETE FROM payment_ways");
+	await connection.query("DELETE FROM cart_products");
 	await connection.query("DELETE FROM products");
 	await connection.query("DELETE FROM categories");
-	await connection.query("DELETE FROM requests");
-	await connection.query("DELETE FROM sessions");
+	await connection.query("DELETE FROM carts");
 	await connection.query("DELETE FROM users");
 
 	connection.end();
