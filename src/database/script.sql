@@ -9,8 +9,6 @@ CREATE TABLE "users" (
   OIDS=FALSE
 );
 
-
-
 CREATE TABLE "sessions" (
 	"id" serial NOT NULL,
 	"user_id" serial NOT NULL,
@@ -23,8 +21,6 @@ CREATE TABLE "sessions" (
   OIDS=FALSE
 );
 
-
-
 CREATE TABLE "cart_products" (
 	"int" serial NOT NULL,
 	"cart_id" int NOT NULL,
@@ -35,8 +31,6 @@ CREATE TABLE "cart_products" (
   OIDS=FALSE
 );
 
-
-
 CREATE TABLE "products" (
 	"id" serial NOT NULL,
 	"category_id" int NOT NULL,
@@ -44,7 +38,7 @@ CREATE TABLE "products" (
 	"description" TEXT NOT NULL,
 	"image" TEXT NOT NULL,
 	"stock_total" int NOT NULL,
-	"price" int NOT NULL,
+	"price" DECIMAL NOT NULL,
 	CONSTRAINT "products_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -60,8 +54,6 @@ CREATE TABLE "categories" (
   OIDS=FALSE
 );
 
-
-
 CREATE TABLE "carts" (
 	"id" serial NOT NULL,
 	"user_id" int NOT NULL,
@@ -70,8 +62,6 @@ CREATE TABLE "carts" (
   OIDS=FALSE
 );
 
-
-
 CREATE TABLE "payment_ways" (
 	"id" serial NOT NULL,
 	"name" varchar(255) NOT NULL,
@@ -79,8 +69,6 @@ CREATE TABLE "payment_ways" (
 ) WITH (
   OIDS=FALSE
 );
-
-
 
 CREATE TABLE "checkouts" (
 	"id" serial NOT NULL,
@@ -96,20 +84,11 @@ CREATE TABLE "checkouts" (
   OIDS=FALSE
 );
 
-
-
-
 ALTER TABLE "sessions" ADD CONSTRAINT "sessions_fk0" FOREIGN KEY ("user_id") REFERENCES "users"("id");
-
 ALTER TABLE "cart_products" ADD CONSTRAINT "cart_products_fk0" FOREIGN KEY ("cart_id") REFERENCES "carts"("id");
 ALTER TABLE "cart_products" ADD CONSTRAINT "cart_products_fk1" FOREIGN KEY ("product_id") REFERENCES "products"("id");
-
 ALTER TABLE "products" ADD CONSTRAINT "products_fk0" FOREIGN KEY ("category_id") REFERENCES "categories"("id");
-
-
 ALTER TABLE "carts" ADD CONSTRAINT "carts_fk0" FOREIGN KEY ("user_id") REFERENCES "users"("id");
-
-
 ALTER TABLE "checkouts" ADD CONSTRAINT "checkouts_fk0" FOREIGN KEY ("cart_id") REFERENCES "carts"("id");
 ALTER TABLE "checkouts" ADD CONSTRAINT "checkouts_fk1" FOREIGN KEY ("payment_id") REFERENCES "payment_ways"("id");
 ALTER TABLE "checkouts" ADD CONSTRAINT "checkouts_fk2" FOREIGN KEY ("user_id") REFERENCES "users"("id");

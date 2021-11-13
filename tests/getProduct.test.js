@@ -5,12 +5,17 @@ import connection from '../src/database/connection.js';
 import createCategories from "./factories/createCategories.js";
 import createProducts from "./factories/createProducts.js";
 
+beforeAll(async () => {
+    const categories = await createCategories(2);
+    await createProducts(categories.map((id) => id.id));
+});
+afterAll(() => connection.end());
 describe("GET /products", () => {
-    beforeAll(async () => {
-        const categories = await createCategories(2);
-        await createProducts(categories.map((id)=> id.id));
-    })
-    
+    afterEach(async () => {
+        await connection.query("DELETE FROM products");
+        await connection.query("DELETE FROM categories");
+
+    });
     it("response 200 for success", async () => {
         const result = await supertest(app).get("/products")
         expect(result.status).toEqual(200);
@@ -19,17 +24,4 @@ describe("GET /products", () => {
         const result = await supertest(app).get("/products")
         expect(result.status).toEqual(204);
     })
-});
-
-afterAll(async () => {
-    await connection.query("DELETE FROM payment_ways");
-    await connection.query("DELETE FROM sessions");
-    await connection.query("DELETE FROM checkouts");
-    await connection.query("DELETE FROM cart_products");
-    await connection.query("DELETE FROM products");
-    await connection.query("DELETE FROM categories");
-    await connection.query("DELETE FROM carts");
-    await connection.query("DELETE FROM users");
-
-    connection.end();
 });

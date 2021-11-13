@@ -9,9 +9,20 @@
 ```json
  [ 
     {
+        "id":1,
         "name":"coffee",
         "category":"drink",
-        "stock_total":10
+        "stock_total":10,
+        "image":"URL",
+        "price":2.99
+    }
+    {
+        "id":2,
+        "name":"mentos",
+        "category":"gum",
+        "stock_total":8,
+        "image":"URL",
+        "price":1.99
     }
  ]
 ```
