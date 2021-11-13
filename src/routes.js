@@ -4,6 +4,7 @@ import { getProducts } from "./controllers/products.js";
 import { logout } from "./controllers/sessions.js";
 import validateToken from "./middlewares/tokenValidator.js";
 import { checkout } from "./controllers/checkout.js";
+import { getCart } from "./controllers/cart.js";
 
 const routes = Router();
 
@@ -16,5 +17,6 @@ routes.get("/health", (req, res) => {
 	res.send("Healthy");
 });
 routes.get("/products", getProducts);
+routes.get("/cart", getCart)
 
 export default routes;
