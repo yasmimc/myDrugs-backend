@@ -25,19 +25,3 @@ describe("GET /products", () => {
         expect(result.status).toEqual(204);
     })
 });
-<<<<<<< HEAD
-=======
-
-afterAll(async () => {
-    await connection.query("DELETE FROM payment_ways");
-    await connection.query("DELETE FROM sessions");
-    await connection.query("DELETE FROM checkouts");
-    await connection.query("DELETE FROM cart_products");
-    await connection.query("DELETE FROM products");
-    await connection.query("DELETE FROM categories");
-    await connection.query("DELETE FROM carts");
-    await connection.query("DELETE FROM users");
-
-    connection.end();
-});
->>>>>>> 265a763e75b4735fb84cb0e62405ce65aabfbcd0
