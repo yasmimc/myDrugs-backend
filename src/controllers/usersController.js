@@ -70,7 +70,8 @@ async function signIn(req, res) {
 			[user.id, token, device]
 		);
 
-		res.status(200).send({ token });
+		delete user.password;
+		res.status(200).send({ token, user });
 	} catch (error) {
 		console.log(error.message);
 		res.send(500);
@@ -85,9 +86,9 @@ async function userAlredyExists(email, cpf) {
 		);
 		if (existentUser.rowCount !== 0) return existentUser.rows[0];
 		return false;
-	} catch(e) {
-		console.log("ERROR func userAlredyExists")
-		console.log(e)
+	} catch (e) {
+		console.log("ERROR func userAlredyExists");
+		console.log(e);
 		return false;
 	}
 }
