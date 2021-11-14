@@ -1,7 +1,6 @@
 import "../src/setup.js";
 import app from "../src/app.js";
 import supertest from "supertest";
-import { v4 as uuid } from "uuid";
 import connection from '../src/database/connection.js';
 import { createUser } from "./factories/createUser.js";
 import { createSession } from "./factories/createSession.js";
@@ -66,6 +65,31 @@ describe("PUT /cart", () => {
             .send(createBody(2))
             .set({ Authorization: `Bearer ${SESSION.token}` })
         expect(result.status).toBe(200);
+    })
+
+    it("response 400 after sending unformated body", async () => {
+        const result = await supertest(app)
+            .delete("/cart")
+            .send({})
+            .set({ Authorization: `Bearer ${SESSION.token}` })
+        expect(result.status).toBe(422)
+    })
+
+    it("response 200/404 after sending proper/unexistent cartproduct", async () => {
+        const newBody = createBody(1)
+        delete newBody.amount
+
+        let result = await supertest(app)
+            .delete("/cart")
+            .send(newBody)
+            .set({ Authorization: `Bearer ${SESSION.token}` })
+        expect(result.status).toBe(200)
+
+        result = await supertest(app)
+            .delete("/cart")
+            .send(newBody)
+            .set({ Authorization: `Bearer ${SESSION.token}` })
+        expect(result.status).toBe(404)
     })
 
 })
