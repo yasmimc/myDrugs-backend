@@ -5,12 +5,12 @@ import connection from "../src/database/connection.js";
 import { createUser } from "./factories/createUser.js";
 
 import faker from "faker";
-import { createSession } from "./factories/createSession.js";
 
 describe("POST /sign-up", () => {
 	let mockUser;
 
 	beforeAll(async () => {
+		await connection.query("DELETE FROM users");
 
 		/*createUser takes an optional parameter (dontSave) that says 
 		whether user data should not be saved to the database*/
@@ -138,32 +138,12 @@ describe("POST /sign-in", () => {
 
 		expect(status).toEqual(401);
 	});
-
-	it("log off active session with the same device", async () => {
-		const firstSession = await createSession(mockUser.id, "jest agent");
-
-		const body = {
-			cpf: mockUser.cpf,
-			password: mockUser.password,
-		};
-
-		await supertest(app)
-			.post("/sign-in")
-			.send(body)
-			.set({ "user-agent": "jest agent" });
-
-		const firstSessionIsActive = await connection.query(
-			`SELECT is_expired FROM sessions WHERE id = ${firstSession.id}`
-		);
-
-		expect(firstSessionIsActive.rows[0].is_expired).toBe(true);
-	});
 });
 
 afterAll(async () => {
+	await connection.query("DELETE FROM payment_ways");
 	await connection.query("DELETE FROM sessions");
 	await connection.query("DELETE FROM checkouts");
-	await connection.query("DELETE FROM payment_ways");
 	await connection.query("DELETE FROM cart_products");
 	await connection.query("DELETE FROM products");
 	await connection.query("DELETE FROM categories");
