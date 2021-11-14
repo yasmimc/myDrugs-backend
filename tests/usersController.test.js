@@ -11,7 +11,6 @@ describe("POST /sign-up", () => {
 	let mockUser;
 
 	beforeAll(async () => {
-		await connection.query("DELETE FROM users");
 
 		/*createUser takes an optional parameter (dontSave) that says 
 		whether user data should not be saved to the database*/
@@ -162,9 +161,9 @@ describe("POST /sign-in", () => {
 });
 
 afterAll(async () => {
-	await connection.query("DELETE FROM payment_ways");
 	await connection.query("DELETE FROM sessions");
 	await connection.query("DELETE FROM checkouts");
+	await connection.query("DELETE FROM payment_ways");
 	await connection.query("DELETE FROM cart_products");
 	await connection.query("DELETE FROM products");
 	await connection.query("DELETE FROM categories");
