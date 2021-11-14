@@ -14,6 +14,11 @@ const cartIncrementBodySchema = joi.object({
 	amount: joi.number().required(),
 })
 
+const cartRemovalBodySchema = joi.object({	
+	cartId: joi.number().required(),
+	productId: joi.number().required(),
+})
+
 const checkoutSchema = joi.object({
     userId: joi.number().required(),
     paymentId: joi.number().required(),
@@ -27,5 +32,6 @@ const checkoutSchema = joi.object({
 export {
 	usersSchema,
 	cartIncrementBodySchema,
-	checkoutSchema
+	checkoutSchema,
+	cartRemovalBodySchema
 };

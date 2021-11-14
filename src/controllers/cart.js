@@ -1,5 +1,6 @@
 import connection from "../database/connection.js";
-import { cartIncrementBodySchema } from "../database/validations/schemas.js";
+import { cartIncrementBodySchema, cartRemovalBodySchema } from "../database/validations/schemas.js";
+import { getCartProducts } from "../helpers/cart.js";
 
 /** 
  * Get the user carts there are not associated with a checkout.
@@ -71,18 +72,33 @@ async function addToCart(req, res) {
 
 }
 
-async function getCartProducts(cartId) {
-    const cart = await connection.query(
-        `SELECT products.id, products.name, products.description, products.image, products.stock_total as "stockTotal", products.price,
-                categories.id AS "categoryId", categories.name AS "categoryName" FROM products
-        JOIN categories ON products.category_id = categories.id
-        WHERE products.id IN (SELECT product_id FROM cart_products WHERE cart_id = $1);`,
-        [ cartId ]
-    )
-    return cart.rows
+async function removeFromCart(req, res) {
+    if(cartRemovalBodySchema.validate(req.body).error) return res.sendStatus(422)
+
+    try {
+        const { cartId, productId } = req.body
+
+        const deletionResult = await connection.query(
+            'DELETE FROM cart_products WHERE cart_id = $1 AND product_id = $2;',
+            [ cartId, productId ]
+        )
+
+        if(deletionResult.rowCount) {
+            const updatedCartProducts = await getCartProducts(cartId);
+            return res.status(200).send({ cartId, products: updatedCartProducts })
+        }
+
+        return res.sendStatus(404)
+
+    } catch(e) {
+        console.log("REMOVE FROM CART FAILURE")
+        console.log(e)
+        return res.sendStatus(500)
+    }
 }
 
 export {
     getCart,
-    addToCart
+    addToCart,
+    removeFromCart
 }

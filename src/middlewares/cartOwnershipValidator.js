@@ -1,10 +1,10 @@
 import connection from "../database/connection.js";
-import { cartIncrementBodySchema } from "../database/validations/schemas.js";
+import { cartIncrementBodySchema, cartRemovalBodySchema } from "../database/validations/schemas.js";
 
 export default async function verifyCartOwnership(req, res, next) {
     const token = req.headers.authorization.replace("Bearer ", "")
 
-    if(cartIncrementBodySchema.validate(req.body).error) return res.sendStatus(422)
+    if(cartIncrementBodySchema.validate(req.body).error && cartRemovalBodySchema.validate(req.body).error) return res.sendStatus(422)
     const { cartId } = req.body;
 
     try {
