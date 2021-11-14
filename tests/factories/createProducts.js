@@ -1,6 +1,7 @@
 import connection from '../../src/database/connection';
 import faker from 'faker';
 
+//Creates one product for each category id inserted
 export default async function createProducts(categoryIds) {
     const productPromises = categoryIds.map(id => {
         const stockTotal = parseInt(Math.random()*10)

@@ -1,4 +1,5 @@
 import connection from "../database/connection.js";
+import { cartIncrementBodySchema } from "../database/validations/schemas.js";
 
 /** 
  * Get the user carts there are not associated with a checkout.
@@ -31,6 +32,35 @@ async function getCart(req, res) {
     }
 }
 
+async function addToCart(req, res) {
+    if(cartIncrementBodySchema.validate(req.body).error) return res.sendStatus(422)
+
+    try {
+        const { cartId, productId, amount } = req.body;
+
+        //check if product id is already on cart and updates it if it is:
+        const productAlreadyOnCart = await connection.query(
+            'UPDATE cart_products SET amount = $1 WHERE cart_id = $2 AND product_id = $3 RETURNING *;',
+            [ amount, cartId, productId ]
+        )
+
+        if(productAlreadyOnCart.rows.length) return res.sendStatus(200)
+
+        await connection.query(
+            'INSERT INTO cart_products (cart_id, product_id, amount) VALUES ($1, $2, $3)',
+            [ cartId, productId, amount ]
+        )
+
+        return res.sendStatus(201)
+    } catch(e) {
+        console.log("ERROR PUT /cart")
+        console.log(e)
+        return res.sendStatus(500)
+    }
+
+}
+
 export {
-    getCart
+    getCart,
+    addToCart
 }

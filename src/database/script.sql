@@ -22,11 +22,11 @@ CREATE TABLE "sessions" (
 );
 
 CREATE TABLE "cart_products" (
-	"int" serial NOT NULL,
+	"id" serial NOT NULL,
 	"cart_id" int NOT NULL,
 	"product_id" int NOT NULL,
 	"amount" int NOT NULL,
-	CONSTRAINT "cart_products_pk" PRIMARY KEY ("int")
+	CONSTRAINT "cart_products_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
 );

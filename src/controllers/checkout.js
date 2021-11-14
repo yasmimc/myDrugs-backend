@@ -1,4 +1,4 @@
-import { checkoutSchema } from '../database/schemas.js';
+import { checkoutSchema } from '../database/validations/schemas.js';
 import connection from '../database/connection.js';
 import { v4 as uuid } from 'uuid';
 import mailer from '../services/mailer.js';
