@@ -8,4 +8,24 @@ const usersSchema = joi.object({
 	password: joi.string().pattern(new RegExp(strongPasswordRegex)).required(),
 });
 
-export { usersSchema };
+const cartIncrementBodySchema = joi.object({
+	cartId: joi.number().required(),
+	productId: joi.number().required(),
+	amount: joi.number().required(),
+})
+
+const checkoutSchema = joi.object({
+    userId: joi.number().required(),
+    paymentId: joi.number().required(),
+    cartId: joi.number().required(),
+    name: joi.string().required(),
+    email: joi.string().email({ tlds: { allow: false } }).required(),
+    cep: joi.string().min(8).max(8).required(),
+    addressNumber: joi.number().required(),
+})
+
+export {
+	usersSchema,
+	cartIncrementBodySchema,
+	checkoutSchema
+};
