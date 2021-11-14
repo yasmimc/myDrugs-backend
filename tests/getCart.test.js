@@ -8,7 +8,6 @@ import { createSession } from "./factories/createSession.js";
 describe("GET /cart", () => {
     let USER;
     let SESSION;
-    let CART;
 
     it("response 201 for no cart previously saved", async () => {
         USER = await createUser()
@@ -18,6 +17,21 @@ describe("GET /cart", () => {
             .get("/cart")
             .set({ Authorization: `Bearer ${SESSION.token}` })
         expect(result.status).toEqual(201)
+    })
+
+    it("response 200 for cart previously saved found", async () => {
+        USER = await createUser()
+        SESSION = await createSession(USER.id)
+
+        let result = await supertest(app)
+            .get("/cart")
+            .set({ Authorization: `Bearer ${SESSION.token}` })
+        expect(result.status).toEqual(201)
+
+        result = await supertest(app)
+            .get("/cart")
+            .set({ Authorization: `Bearer ${SESSION.token}` })
+        expect(result.status).toEqual(200)
     })
 })
 

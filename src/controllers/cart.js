@@ -1,4 +1,4 @@
-import connection from "../database/connection";
+import connection from "../database/connection.js";
 
 /** 
  * Get the user carts there are not associated with a checkout.
@@ -13,16 +13,14 @@ async function getCart(req, res) {
 
         const dbCartSearch = await connection.query(
             'SELECT * FROM carts WHERE user_id = $1 AND id NOT IN (SELECT cart_id FROM checkouts);',
-            [ dbUserIdSearch.rows[0].id ]
+            [ dbUserIdSearch.rows[0].user_id ]
         )
 
         if(dbCartSearch.rows.length) return res.status(200).send(dbCartSearch.rows[0])
 
-        console.log(dbUserIdSearch.rows[0].id)
-        console.log(typeof dbUserIdSearch.rows[0].id)
         const newCart = await connection.query(
             'INSERT INTO carts (user_id) VALUES ($1) RETURNING *;',
-            [ dbUserIdSearch.rows[0].id ]
+            [ dbUserIdSearch.rows[0].user_id ]
         )
 
         return res.status(201).send(newCart.rows[0])
