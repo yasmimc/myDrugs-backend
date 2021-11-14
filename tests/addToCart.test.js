@@ -1,6 +1,7 @@
 import "../src/setup.js";
 import app from "../src/app.js";
 import supertest from "supertest";
+import { v4 as uuid } from "uuid";
 import connection from '../src/database/connection.js';
 import { createUser } from "./factories/createUser.js";
 import { createSession } from "./factories/createSession.js";
@@ -30,6 +31,18 @@ describe("PUT /cart", () => {
         CATEGORIES = await createCategories(3)
         PRODUCTS = await createProducts(CATEGORIES.map(category => category.id))
         CART = await createCart(USER.id);
+    })
+
+    it("response 401 after sending invalid body", async () => {
+        const userTwo = await createUser()
+        const sessionTwo = await createSession(userTwo.id)
+
+        const result = await supertest(app)
+            .put("/cart")
+            .send(createBody(1))
+            .set({ Authorization: `Bearer ${sessionTwo.token}` })
+        
+        expect(result.status).toBe(401);
     })
 
     it("response 422 after sending invalid body", async () => {

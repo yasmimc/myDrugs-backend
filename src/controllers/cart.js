@@ -17,14 +17,19 @@ async function getCart(req, res) {
             [ dbUserIdSearch.rows[0].user_id ]
         )
 
-        if(dbCartSearch.rows.length) return res.status(200).send(dbCartSearch.rows[0])
+        if(dbCartSearch.rows.length) {
+            const cartId = dbCartSearch.rows[0].id
+            const savedCartProducts = await getCartProducts(cartId)
+            return res.status(200).send({ cartId, products: savedCartProducts })
+        }
 
         const newCart = await connection.query(
             'INSERT INTO carts (user_id) VALUES ($1) RETURNING *;',
             [ dbUserIdSearch.rows[0].user_id ]
         )
+        delete newCart.rows[0].user_id
 
-        return res.status(201).send(newCart.rows[0])
+        return res.status(201).send({ cartId: newCart.rows[0].id, products: [] })
     } catch(e) {
         console.log("ERROR: GET /carts")
         console.log(e)
@@ -46,14 +51,8 @@ async function addToCart(req, res) {
         )
 
         if(productAlreadyOnCart.rowCount) {
-            const newCart = await connection.query(
-                `SELECT products.id, products.name, products.description, products.image, products.stock_total as "stockTotal", products.price,
-                        categories.id AS "categoryId", categories.name AS "categoryName" FROM products
-                JOIN categories ON products.category_id = categories.id
-                WHERE products.id IN (SELECT product_id FROM cart_products WHERE cart_id = $1);`,
-                [ cartId ]
-            )
-            return res.status(200).send(newCart.rows)
+            const newCartProducts = await getCartProducts(cartId)
+            return res.status(200).send({ cartId, products: newCartProducts })
         }
 
         await connection.query(
@@ -61,21 +60,26 @@ async function addToCart(req, res) {
             [ cartId, productId, amount ]
         )
 
-        const newCart = await connection.query(
-            `SELECT products.id, products.name, products.description, products.image, products.stock_total as "stockTotal", products.price,
-                    categories.id AS "categoryId", categories.name AS "categoryName" FROM products
-            JOIN categories ON products.category_id = categories.id
-            WHERE products.id IN (SELECT product_id FROM cart_products WHERE cart_id = $1);`,
-            [ cartId ]
-        )
+        const newCartProducts = await getCartProducts(cartId)
 
-        return res.status(201).send(newCart.rows)
+        return res.status(201).send({ cartId, products: newCartProducts })
     } catch(e) {
         console.log("ERROR PUT /cart")
         console.log(e)
         return res.sendStatus(500)
     }
 
+}
+
+async function getCartProducts(cartId) {
+    const cart = await connection.query(
+        `SELECT products.id, products.name, products.description, products.image, products.stock_total as "stockTotal", products.price,
+                categories.id AS "categoryId", categories.name AS "categoryName" FROM products
+        JOIN categories ON products.category_id = categories.id
+        WHERE products.id IN (SELECT product_id FROM cart_products WHERE cart_id = $1);`,
+        [ cartId ]
+    )
+    return cart.rows
 }
 
 export {
