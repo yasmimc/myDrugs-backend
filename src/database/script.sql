@@ -13,7 +13,7 @@ CREATE TABLE "sessions" (
 	"id" serial NOT NULL,
 	"user_id" serial NOT NULL,
 	"token" uuid NOT NULL UNIQUE,
-	"device" TEXT NOT NULL UNIQUE,
+	"device" TEXT NOT NULL,
 	"created_at" TIMESTAMP NOT NULL DEFAULT 'now()',
 	"is_expired" bool NOT NULL DEFAULT 'false',
 	CONSTRAINT "sessions_pk" PRIMARY KEY ("id")

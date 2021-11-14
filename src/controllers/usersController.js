@@ -2,6 +2,7 @@ import connection from "../database/connection.js";
 import { usersSchema } from "../database/validations/schemas.js";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
+import { userAlredyExists, sessionAlredyExists } from "../helpers/users.js";
 
 async function signUp(req, res) {
 	const { name, email, cpf, password } = req.body;
@@ -45,14 +46,14 @@ async function signIn(req, res) {
 	const { email, cpf, password } = req.body;
 
 	if (!(email || cpf) || !password) {
-		res.send(400);
+		res.sendStatus(400);
 		return;
 	}
 
 	const user = await userAlredyExists(email, cpf);
 
 	if (!user) {
-		res.send(404);
+		res.sendStatus(404);
 		return;
 	}
 
@@ -63,6 +64,15 @@ async function signIn(req, res) {
 
 	try {
 		const device = req.headers?.["user-agent"];
+
+		const previousSession = await sessionAlredyExists(user.id, device);
+
+		if (previousSession) {
+			await connection.query(
+				`UPDATE sessions SET is_expired = true WHERE id = $1`,
+				[previousSession.id]
+			);
+		}
 		const token = uuid();
 
 		connection.query(
@@ -75,21 +85,6 @@ async function signIn(req, res) {
 	} catch (error) {
 		console.log(error.message);
 		res.send(500);
-	}
-}
-
-async function userAlredyExists(email, cpf) {
-	try {
-		const existentUser = await connection.query(
-			`SELECT * FROM users WHERE email = $1 OR cpf = $2;`,
-			[email, cpf]
-		);
-		if (existentUser.rowCount !== 0) return existentUser.rows[0];
-		return false;
-	} catch (e) {
-		console.log("ERROR func userAlredyExists");
-		console.log(e);
-		return false;
 	}
 }
 
