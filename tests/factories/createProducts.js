@@ -1,4 +1,4 @@
-import connection from '../../src/database/connection';
+import connection from '../../src/database/connection.js';
 import faker from 'faker';
 
 //Creates one product for each category id inserted

@@ -8,7 +8,8 @@ async function getProducts(req, res) {
                 categories.name AS category,
                 stock_total,
                 image,
-                price FROM products
+                price,
+                description FROM products
         JOIN categories ON products.category_id = categories.id;
         `);
         if (!products.rowCount) return res.sendStatus(204);
