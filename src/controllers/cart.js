@@ -32,6 +32,7 @@ async function getCart(req, res) {
     }
 }
 
+
 async function addToCart(req, res) {
     if(cartIncrementBodySchema.validate(req.body).error) return res.sendStatus(422)
 
@@ -40,18 +41,35 @@ async function addToCart(req, res) {
 
         //check if product id is already on cart and updates it if it is:
         const productAlreadyOnCart = await connection.query(
-            'UPDATE cart_products SET amount = $1 WHERE cart_id = $2 AND product_id = $3 RETURNING *;',
+            'UPDATE cart_products SET amount = $1 WHERE cart_id = $2 AND product_id = $3;',
             [ amount, cartId, productId ]
         )
 
-        if(productAlreadyOnCart.rows.length) return res.sendStatus(200)
+        if(productAlreadyOnCart.rowCount) {
+            const newCart = await connection.query(
+                `SELECT products.id, products.name, products.description, products.image, products.stock_total as "stockTotal", products.price,
+                        categories.id AS "categoryId", categories.name AS "categoryName" FROM products
+                JOIN categories ON products.category_id = categories.id
+                WHERE products.id IN (SELECT product_id FROM cart_products WHERE cart_id = $1);`,
+                [ cartId ]
+            )
+            return res.status(200).send(newCart.rows)
+        }
 
         await connection.query(
-            'INSERT INTO cart_products (cart_id, product_id, amount) VALUES ($1, $2, $3)',
+            'INSERT INTO cart_products (cart_id, product_id, amount) VALUES ($1, $2, $3);',
             [ cartId, productId, amount ]
         )
 
-        return res.sendStatus(201)
+        const newCart = await connection.query(
+            `SELECT products.id, products.name, products.description, products.image, products.stock_total as "stockTotal", products.price,
+                    categories.id AS "categoryId", categories.name AS "categoryName" FROM products
+            JOIN categories ON products.category_id = categories.id
+            WHERE products.id IN (SELECT product_id FROM cart_products WHERE cart_id = $1);`,
+            [ cartId ]
+        )
+
+        return res.status(201).send(newCart.rows)
     } catch(e) {
         console.log("ERROR PUT /cart")
         console.log(e)
