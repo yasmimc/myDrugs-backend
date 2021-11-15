@@ -3,6 +3,7 @@ import app from "../src/app.js";
 import supertest from "supertest";
 import connection from "../src/database/connection.js";
 import { createUser } from "./factories/createUser.js";
+import { createSession } from "./factories/createSession.js";
 
 import faker from "faker";
 
@@ -137,6 +138,26 @@ describe("POST /sign-in", () => {
 		const status = result.status;
 
 		expect(status).toEqual(401);
+	});
+
+	it("log off active session with the same device", async () => {
+		const firstSession = await createSession(mockUser.id, "jest agent");
+
+		const body = {
+			cpf: mockUser.cpf,
+			password: mockUser.password,
+		};
+
+		await supertest(app)
+			.post("/sign-in")
+			.send(body)
+			.set({ "user-agent": "jest agent" });
+
+		const firstSessionIsActive = await connection.query(
+			`SELECT is_expired FROM sessions WHERE id = ${firstSession.id}`
+		);
+
+		expect(firstSessionIsActive.rows[0].is_expired).toBe(true);
 	});
 });
 

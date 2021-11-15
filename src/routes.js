@@ -11,6 +11,7 @@ const routes = Router();
 
 routes.post("/sign-up", signUp);
 routes.post("/sign-in", signIn);
+routes.get("/sessions", validateToken, (req, res) => res.sendStatus(200));
 routes.delete("/sessions", validateToken, logout);
 routes.post("/checkout", validateToken, checkout);
 
@@ -19,8 +20,8 @@ routes.get("/health", (req, res) => {
 });
 routes.get("/products", getProducts);
 
-routes.get("/cart", validateToken, getCart)
-routes.put("/cart", validateToken, verifyCartOwnership, addToCart)
-routes.delete("/cart", validateToken, verifyCartOwnership, removeFromCart)
+routes.get("/cart", validateToken, getCart);
+routes.put("/cart", validateToken, verifyCartOwnership, addToCart);
+routes.delete("/cart", validateToken, verifyCartOwnership, removeFromCart);
 
 export default routes;
