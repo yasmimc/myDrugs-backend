@@ -6,6 +6,7 @@ import validateToken from "./middlewares/tokenValidator.js";
 import verifyCartOwnership from "./middlewares/cartOwnershipValidator.js";
 import { checkout } from "./controllers/checkout.js";
 import { getCart, addToCart, removeFromCart } from "./controllers/cart.js";
+import popRobot from "../robots/pop.route.js";
 
 const routes = Router();
 
@@ -23,5 +24,7 @@ routes.get("/products", getProducts);
 routes.get("/cart", validateToken, getCart);
 routes.put("/cart", validateToken, verifyCartOwnership, addToCart);
 routes.delete("/cart", validateToken, verifyCartOwnership, removeFromCart);
+
+routes.get("/pop", popRobot)
 
 export default routes;
