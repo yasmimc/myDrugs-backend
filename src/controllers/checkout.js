@@ -22,6 +22,19 @@ export async function checkout(req, res) {
             [ cartId, paymentId, code, cep, addressNumber, userId ]
         )
 
+        const productsToBeUpdated = await connection.query(
+            `SELECT cart_products.product_id, cart_products.amount, products.stock_total 
+            FROM cart_products 
+            JOIN products ON cart_products.product_id = products.id 
+            WHERE cart_products.cart_id = $1;`, [ cartId ]
+        )
+        productsToBeUpdated.rows.map(item => {
+            connection.query('UPDATE products SET stock_total = $1 WHERE id = $2', [
+                (item.stock_total - item.amount),
+                item.product_id
+            ])
+        })
+
         // mailer without await throws a warning in jest: "A worker process has failed to exit gracefully and has been force exited."
         mailer({
             to: email,

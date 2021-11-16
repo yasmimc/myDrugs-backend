@@ -19,6 +19,3 @@ export default async function createCategories(howMany) {
         return e
     }
 }
-/* 
-const result = await createCategories(2);
-console.log(result) */
