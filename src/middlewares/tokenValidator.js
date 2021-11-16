@@ -3,7 +3,7 @@ import { validate as uuidValidate } from "uuid";
 
 export default async function validateToken(req, res, next) {
 	const { authorization } = req.headers;
-	
+
 	if (
 		!authorization ||
 		authorization.trim() === "" ||
